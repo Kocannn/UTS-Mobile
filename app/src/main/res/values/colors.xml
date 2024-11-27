@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pastel_blue">#A7C7E7</color>
-    <color name="pastel_lavender">#C3AED6</color>
-    <color name="white">#FFFFFF</color>
-    <color name="dark_text">#2C3E50</color>
-    <color name="accent">#6C5B7B</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="yellow">#F4C95D</color>
+    <color name="bg_yellow">#E7E393</color>
 </resources>

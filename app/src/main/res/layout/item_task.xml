@@ -3,7 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:layout_margin="5dp"
+    android:background="@color/white"
+    android:elevation="12dp">
+
 
     <TextView
         android:id="@+id/taskText"
@@ -11,13 +15,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Task Name"
-        android:textSize="16sp"
-        android:padding="8dp" />
+        android:textSize="20sp"
+        android:padding="8dp"
+        android:textColor="@color/black"/>
 
     <Button
         android:id="@+id/completeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/yellow"
         android:text="Selesai" />
 
     <ImageView
