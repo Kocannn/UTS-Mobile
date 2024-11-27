@@ -33,14 +33,14 @@ public class TodoListFragment extends Fragment {
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
         taskAdapter = new TaskAdapter(new ArrayList<>(), position -> {
             if (taskViewModel != null) {
-                taskViewModel.removeTask(position);
+                taskViewModel.completeTask(position);
             }
-        });
+        }, null); // Tidak ada listener hapus di fragment ini
         recyclerViewTasks.setAdapter(taskAdapter);
 
         // Set up ViewModel
         taskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
-        taskViewModel.getTasks().observe(getViewLifecycleOwner(), tasks -> {
+        taskViewModel.getTodoTasks().observe(getViewLifecycleOwner(), tasks -> {
             taskAdapter.updateTasks(tasks);
         });
 

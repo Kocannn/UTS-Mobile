@@ -1,7 +1,9 @@
 package com.example.uts;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,66 +13,69 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    // Data untuk task yang akan ditampilkan di RecyclerView
     private List<String> tasks;
-    private OnTaskClickListener onTaskClickListener;
+    private OnTaskClickListener onCompleteListener; // Listener untuk tombol Selesai
+    private OnTaskClickListener onDeleteListener;   // Listener untuk ikon Hapus
 
-    // Interface untuk mendengarkan klik pada task
     public interface OnTaskClickListener {
-        void onTaskClick(int position);  // untuk menghapus task misalnya
+        void onTaskClick(int position);
     }
 
-    // Konstruktor TaskAdapter
-    public TaskAdapter(List<String> tasks, OnTaskClickListener listener) {
+    public TaskAdapter(List<String> tasks, OnTaskClickListener completeListener, OnTaskClickListener deleteListener) {
         this.tasks = tasks;
-        this.onTaskClickListener = listener;
+        this.onCompleteListener = completeListener; // Hanya diberikan jika tombol Selesai diperlukan
+        this.onDeleteListener = deleteListener;
     }
 
-    // Metode untuk memperbarui data dalam RecyclerView
     public void updateTasks(List<String> newTasks) {
-        tasks.clear();          // Bersihkan data lama
-        tasks.addAll(newTasks); // Tambahkan data baru
-        notifyDataSetChanged(); // Beri tahu adapter bahwa data telah berubah
+        tasks.clear();
+        tasks.addAll(newTasks);
+        notifyDataSetChanged();
     }
 
-    // Membuat view holder untuk item RecyclerView
     @Override
     public TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Menginflate layout item_task ke dalam RecyclerView
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_task, parent, false);
         return new TaskViewHolder(itemView);
     }
 
-    // Mengatur data untuk setiap item di RecyclerView
     @Override
     public void onBindViewHolder(TaskViewHolder holder, int position) {
-        // Menampilkan teks task pada TextView
         holder.taskText.setText(tasks.get(position));
 
-        // Menambahkan listener untuk menghapus task saat gambar delete di klik
-        holder.deleteIcon.setOnClickListener(v -> {
-            if (onTaskClickListener != null) {
-                onTaskClickListener.onTaskClick(position);  // memanggil listener untuk menghapus task
-            }
-        });
+        // Tampilkan tombol Selesai hanya jika listener disediakan
+        if (onCompleteListener != null) {
+            holder.completeButton.setVisibility(View.VISIBLE);
+            holder.completeButton.setOnClickListener(v -> onCompleteListener.onTaskClick(position));
+        } else {
+            holder.completeButton.setVisibility(View.GONE);
+        }
+
+        // Tampilkan ikon Hapus jika listener disediakan
+        if (onDeleteListener != null) {
+            holder.deleteIcon.setVisibility(View.VISIBLE);
+            holder.deleteIcon.setOnClickListener(v -> onDeleteListener.onTaskClick(position));
+        } else {
+            holder.deleteIcon.setVisibility(View.GONE);
+        }
     }
 
-    // Menghitung jumlah item dalam RecyclerView
     @Override
     public int getItemCount() {
         return tasks.size();
     }
 
-    // ViewHolder untuk setiap item RecyclerView
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView taskText;  // untuk menampilkan teks task
-        ImageView deleteIcon;  // untuk tombol hapus task
+        TextView taskText;
+        Button completeButton;
+        ImageView deleteIcon;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
-            taskText = itemView.findViewById(R.id.taskText);  // menghubungkan dengan TextView
-            deleteIcon = itemView.findViewById(R.id.deleteIcon);  // menghubungkan dengan ImageView
+            taskText = itemView.findViewById(R.id.taskText);
+            completeButton = itemView.findViewById(R.id.completeButton);
+            deleteIcon = itemView.findViewById(R.id.deleteIcon);
         }
     }
 }

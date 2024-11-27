@@ -3,6 +3,7 @@ package com.example.uts;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,16 +13,11 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CompletedTasksFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class CompletedTasksFragment extends Fragment {
 
     private RecyclerView recyclerViewCompleted;
     private TaskAdapter taskAdapter;
-    private ArrayList<String> completedTasks = new ArrayList<>();
+    private TaskViewModel taskViewModel;
 
     public CompletedTasksFragment() {
         // Required empty public constructor
@@ -35,15 +31,18 @@ public class CompletedTasksFragment extends Fragment {
 
         // Set up RecyclerView
         recyclerViewCompleted.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskAdapter = new TaskAdapter(completedTasks, position -> {
-            completedTasks.remove(position);
-            taskAdapter.notifyItemRemoved(position);
-        });
+        taskAdapter = new TaskAdapter(new ArrayList<>(), null, position -> {
+            if (taskViewModel != null) {
+                taskViewModel.removeTaskFromCompleted(position);
+            }
+        }); // Tidak ada listener selesai di fragment ini
         recyclerViewCompleted.setAdapter(taskAdapter);
 
-        // Simulasi tugas yang selesai
-        completedTasks.add("Wash the car");
-        taskAdapter.notifyDataSetChanged();
+        // Set up ViewModel
+        taskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
+        taskViewModel.getCompletedTasks().observe(getViewLifecycleOwner(), tasks -> {
+            taskAdapter.updateTasks(tasks);
+        });
 
         return rootView;
     }
