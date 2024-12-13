@@ -1,16 +1,14 @@
 package com.example.uts;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 public class AddTaskFragment extends Fragment {
 
@@ -32,15 +30,12 @@ public class AddTaskFragment extends Fragment {
         // Set up ViewModel
         taskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 
+        // Set up Add Task button
         buttonAddTask.setOnClickListener(v -> {
             String task = editTextTask.getText().toString();
-            if (!task.isEmpty()) {
-                // Tambahkan task ke ViewModel
+            if (!task.isEmpty() && taskViewModel != null) {
                 taskViewModel.addTask(task);
-                Toast.makeText(getContext(), "Task Added: " + task, Toast.LENGTH_SHORT).show();
                 editTextTask.setText("");
-            } else {
-                Toast.makeText(getContext(), "Task cannot be empty", Toast.LENGTH_SHORT).show();
             }
         });
 
