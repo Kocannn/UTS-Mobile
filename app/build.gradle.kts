@@ -15,6 +15,12 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    packaging {
+        resources {
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
+        }
+    }
 
     buildTypes {
         release {
@@ -38,6 +44,13 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
+    implementation("androidx.sqlite:sqlite:2.4.0")
+
+    implementation ("com.google.android.gms:play-services-auth:21.3.0")
+    implementation ("com.google.api-client:google-api-client-android:2.7.1")
+    implementation ("com.google.api-client:google-api-client-gson:2.7.1")
+    implementation ("com.google.apis:google-api-services-calendar:v3-rev20241101-2.0.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
