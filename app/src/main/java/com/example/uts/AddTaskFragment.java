@@ -1,7 +1,11 @@
 package com.example.uts;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,6 +99,7 @@ public class AddTaskFragment extends Fragment {
             if (taskViewModel != null) {
                 taskViewModel.addTask(task, selectedPriority, deadlineTimestamp);
                 addEventToCalendar(task, deadlineTimestamp);
+                scheduleDeadlineNotification(task, deadlineTimestamp);
                 editTextTask.setText("");
                 textViewPriority.setText("No priority selected");
                 textViewDeadline.setText("No deadline selected");
@@ -133,6 +138,17 @@ public class AddTaskFragment extends Fragment {
             }, currentDate.get(java.util.Calendar.HOUR_OF_DAY), currentDate.get(java.util.Calendar.MINUTE), false).show();
         }, currentDate.get(java.util.Calendar.YEAR), currentDate.get(java.util.Calendar.MONTH), currentDate.get(java.util.Calendar.DATE)).show();
     }
+
+    private void scheduleDeadlineNotification(String task, long deadline) {
+        Intent intent = new Intent(getContext(), TaskDeadlineReceiver.class);
+        intent.putExtra("task", task);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+        long notificationTime = deadline - 3600000; // 1 hour before deadline
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent);
+    }
+
 
     private void addEventToCalendar(String task, long deadline) {
         Event event = new Event()

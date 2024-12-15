@@ -3,6 +3,7 @@ package com.example.uts;
 import android.app.Application;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -54,6 +55,7 @@ public class TaskViewModel extends AndroidViewModel {
             Task task = currentTasks.get(position);
             db.execSQL("UPDATE tasks SET completed = 1 WHERE id = ?", new Object[]{task.getId()});
             loadTasks();
+            Toast.makeText(getApplication(), "Task \"" + task.getTask() + "\" completed", Toast.LENGTH_SHORT).show(); // Show Toast
         }
     }
 
