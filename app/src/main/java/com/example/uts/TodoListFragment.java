@@ -15,8 +15,12 @@ import java.util.ArrayList;
 
 public class TodoListFragment extends Fragment {
 
-    private RecyclerView recyclerViewTasks;
-    private TaskAdapter taskAdapter;
+    private RecyclerView recyclerViewHighPriority;
+    private RecyclerView recyclerViewMediumPriority;
+    private RecyclerView recyclerViewLowPriority;
+    private TaskAdapter highPriorityAdapter;
+    private TaskAdapter mediumPriorityAdapter;
+    private TaskAdapter lowPriorityAdapter;
     private TaskViewModel taskViewModel;
 
     public TodoListFragment() {
@@ -27,21 +31,45 @@ public class TodoListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_todo_list, container, false);
-        recyclerViewTasks = rootView.findViewById(R.id.recyclerViewTasks);
+        recyclerViewHighPriority = rootView.findViewById(R.id.recyclerViewHighPriority);
+        recyclerViewMediumPriority = rootView.findViewById(R.id.recyclerViewMediumPriority);
+        recyclerViewLowPriority = rootView.findViewById(R.id.recyclerViewLowPriority);
 
-        // Set up RecyclerView
-        recyclerViewTasks.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskAdapter = new TaskAdapter(new ArrayList<>(), position -> {
+        // Set up RecyclerViews
+        recyclerViewHighPriority.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewMediumPriority.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewLowPriority.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        highPriorityAdapter = new TaskAdapter(new ArrayList<>(), position -> {
             if (taskViewModel != null) {
-                taskViewModel.completeTask(position);
+                taskViewModel.completeTask(position, 1);
             }
-        }, null); // Tidak ada listener hapus di fragment ini
-        recyclerViewTasks.setAdapter(taskAdapter);
+        }, null);
+        mediumPriorityAdapter = new TaskAdapter(new ArrayList<>(), position -> {
+            if (taskViewModel != null) {
+                taskViewModel.completeTask(position, 2);
+            }
+        }, null);
+        lowPriorityAdapter = new TaskAdapter(new ArrayList<>(), position -> {
+            if (taskViewModel != null) {
+                taskViewModel.completeTask(position, 3);
+            }
+        }, null);
+
+        recyclerViewHighPriority.setAdapter(highPriorityAdapter);
+        recyclerViewMediumPriority.setAdapter(mediumPriorityAdapter);
+        recyclerViewLowPriority.setAdapter(lowPriorityAdapter);
 
         // Set up ViewModel
         taskViewModel = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
-        taskViewModel.getTodoTasks().observe(getViewLifecycleOwner(), tasks -> {
-            taskAdapter.updateTasks(tasks);
+        taskViewModel.getHighPriorityTasks().observe(getViewLifecycleOwner(), tasks -> {
+            highPriorityAdapter.updateTasks(tasks);
+        });
+        taskViewModel.getMediumPriorityTasks().observe(getViewLifecycleOwner(), tasks -> {
+            mediumPriorityAdapter.updateTasks(tasks);
+        });
+        taskViewModel.getLowPriorityTasks().observe(getViewLifecycleOwner(), tasks -> {
+            lowPriorityAdapter.updateTasks(tasks);
         });
 
         return rootView;

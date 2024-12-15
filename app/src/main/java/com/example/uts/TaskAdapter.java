@@ -13,21 +13,21 @@ import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
-    private List<String> tasks;
-    private OnTaskClickListener onCompleteListener; // Listener untuk tombol Selesai
-    private OnTaskClickListener onDeleteListener;   // Listener untuk ikon Hapus
+    private List<Task> tasks;
+    private OnTaskClickListener onCompleteListener; // Listener for the complete button
+    private OnTaskClickListener onDeleteListener;   // Listener for the delete icon
 
     public interface OnTaskClickListener {
         void onTaskClick(int position);
     }
 
-    public TaskAdapter(List<String> tasks, OnTaskClickListener completeListener, OnTaskClickListener deleteListener) {
+    public TaskAdapter(List<Task> tasks, OnTaskClickListener completeListener, OnTaskClickListener deleteListener) {
         this.tasks = tasks;
-        this.onCompleteListener = completeListener; // Hanya diberikan jika tombol Selesai diperlukan
+        this.onCompleteListener = completeListener; // Only provided if the complete button is needed
         this.onDeleteListener = deleteListener;
     }
 
-    public void updateTasks(List<String> newTasks) {
+    public void updateTasks(List<Task> newTasks) {
         tasks.clear();
         tasks.addAll(newTasks);
         notifyDataSetChanged();
@@ -42,9 +42,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     @Override
     public void onBindViewHolder(TaskViewHolder holder, int position) {
-        holder.taskText.setText(tasks.get(position));
+        Task task = tasks.get(position);
+        holder.taskText.setText(task.getTask());
 
-        // Tampilkan tombol Selesai hanya jika listener disediakan
+        // Show the complete button only if the listener is provided
         if (onCompleteListener != null) {
             holder.completeButton.setVisibility(View.VISIBLE);
             holder.completeButton.setOnClickListener(v -> onCompleteListener.onTaskClick(position));
@@ -52,7 +53,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.completeButton.setVisibility(View.GONE);
         }
 
-        // Tampilkan ikon Hapus jika listener disediakan
+        // Show the delete icon if the listener is provided
         if (onDeleteListener != null) {
             holder.deleteIcon.setVisibility(View.VISIBLE);
             holder.deleteIcon.setOnClickListener(v -> onDeleteListener.onTaskClick(position));
